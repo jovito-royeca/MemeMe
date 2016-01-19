@@ -17,10 +17,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var libraryButton: UIBarButtonItem!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
     
-    let themeColor = UIColor.grayColor()
-    let topText = "TOP"
-    let bottomText = "BOTTOM"
-    
     // "Impact" font, all caps, white with a black outline
     let memeTextAttributes = [
         NSStrokeColorAttributeName : UIColor.blackColor(),
@@ -28,6 +24,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         NSFontAttributeName : UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
         NSStrokeWidthAttributeName : Float(-3.0)
     ]
+
+    let themeColor = UIColor.grayColor()
+    let topText = "TOP"
+    let bottomText = "BOTTOM"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,6 +37,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         topTextField.text = topText
         topTextField.textAlignment = .Center
         topTextField.borderStyle = .None
+//        topTextField.adjustsFontSizeToFitWidth = true
         
         bottomTextField.defaultTextAttributes = memeTextAttributes
         bottomTextField.delegate = self
