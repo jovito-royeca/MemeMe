@@ -11,41 +11,39 @@ import UIKit
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     
-    @IBOutlet weak var topText: UITextField!
+    @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var imagePickerView: UIImageView!
-    @IBOutlet weak var bottomText: UITextField!
+    @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var libraryButton: UIBarButtonItem!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
     
     let themeColor = UIColor.grayColor()
+    let topText = "TOP"
+    let bottomText = "BOTTOM"
     
     // "Impact" font, all caps, white with a black outline
     let memeTextAttributes = [
         NSStrokeColorAttributeName : UIColor.blackColor(),
         NSForegroundColorAttributeName : UIColor.whiteColor(),
         NSFontAttributeName : UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-        NSStrokeWidthAttributeName : Float(3.0),
-        NSBackgroundColorAttributeName: UIColor.grayColor()
+        NSStrokeWidthAttributeName : Float(-3.0)
     ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        topText.delegate = self
-        topText.text = "TOP"
-        topText.textAlignment = .Center
-        topText.borderStyle = .None
-        topText.defaultTextAttributes = memeTextAttributes
-//        topText.textColor = UIColor.whiteColor()
+        topTextField.defaultTextAttributes = memeTextAttributes
+        topTextField.delegate = self
+        topTextField.text = topText
+        topTextField.textAlignment = .Center
+        topTextField.borderStyle = .None
         
-        bottomText.delegate = self
-        bottomText.text = "BOTTOM"
-        bottomText.textAlignment = .Center
-        bottomText.borderStyle = .None
-        bottomText.defaultTextAttributes = memeTextAttributes
+        bottomTextField.defaultTextAttributes = memeTextAttributes
+        bottomTextField.delegate = self
+        bottomTextField.text = bottomText
+        bottomTextField.textAlignment = .Center
+        bottomTextField.borderStyle = .None
         
-//        topText.backgroundColor = themeColor
-//        bottomText.backgroundColor = themeColor
         view.backgroundColor = themeColor
     }
 
@@ -119,9 +117,21 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 //MARK: UITextFieldDelegate
     func textFieldDidBeginEditing(textField: UITextField) {
         if let text = textField.text {
-            if text.uppercaseString == "TOP" ||
-                text.uppercaseString == "BOTTOM" {
+            if text.uppercaseString == topText ||
+                text.uppercaseString == bottomText {
                 textField.text = ""
+            }
+        }
+    }
+    
+    func textFieldDidEndEditing(textField: UITextField) {
+        if let text = textField.text {
+            if text.uppercaseString == "" {
+                if textField == topTextField {
+                    textField.text = topText
+                } else if textField == bottomTextField {
+                    textField.text = bottomText
+                }
             }
         }
     }

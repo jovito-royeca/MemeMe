@@ -69,11 +69,11 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="bottomText" destination="HW0-xA-Qj7" id="i2B-GB-33u"/>
+                        <outlet property="bottomTextField" destination="HW0-xA-Qj7" id="s00-kF-gkZ"/>
                         <outlet property="cameraButton" destination="oul-md-aZp" id="IkN-GV-UKQ"/>
                         <outlet property="imagePickerView" destination="x0T-dd-8rf" id="No2-C2-Ovl"/>
                         <outlet property="libraryButton" destination="Skc-yU-wEW" id="icg-1J-ZN4"/>
-                        <outlet property="topText" destination="F8r-iq-1eY" id="Hn5-m7-HlQ"/>
+                        <outlet property="topTextField" destination="F8r-iq-1eY" id="kWe-L0-o5A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
