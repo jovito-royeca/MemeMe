@@ -4,6 +4,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
     </dependencies>
     <scenes>
         <!--MemeMe-->
@@ -37,7 +38,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JIV-ii-1eu">
                                 <rect key="frame" x="0.0" y="64" width="600" height="492"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="x0T-dd-8rf">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="x0T-dd-8rf">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="492"/>
                                         <variation key="heightClass=regular-widthClass=compact" ambiguous="YES" misplaced="YES">
                                             <rect key="frame" x="180" y="236" width="240" height="328"/>
@@ -54,7 +55,7 @@
                                         <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                                     </textField>
                                 </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="F8r-iq-1eY" firstAttribute="leading" secondItem="JIV-ii-1eu" secondAttribute="leading" constant="20" id="62f-Gh-EeE"/>
                                     <constraint firstItem="HW0-xA-Qj7" firstAttribute="leading" secondItem="JIV-ii-1eu" secondAttribute="leading" constant="20" id="85V-s6-z5c"/>
@@ -81,11 +82,18 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="MemeMe" id="96n-g0-wBf">
-                        <barButtonItem key="leftBarButtonItem" enabled="NO" style="plain" systemItem="action" id="gio-Ff-1yQ">
-                            <connections>
-                                <action selector="doAction:" destination="BYZ-38-t0r" id="S9m-fY-8XO"/>
-                            </connections>
-                        </barButtonItem>
+                        <leftBarButtonItems>
+                            <barButtonItem enabled="NO" style="plain" systemItem="action" id="gio-Ff-1yQ">
+                                <connections>
+                                    <action selector="doAction:" destination="BYZ-38-t0r" id="S9m-fY-8XO"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="font" style="plain" id="KKr-x9-hSN">
+                                <connections>
+                                    <action selector="changeFont:" destination="BYZ-38-t0r" id="DPl-f0-CVI"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                         <barButtonItem key="rightBarButtonItem" enabled="NO" style="plain" systemItem="cancel" id="4eJ-ry-1rX">
                             <connections>
                                 <action selector="cancelMeme:" destination="BYZ-38-t0r" id="d9L-AD-zP2"/>
@@ -126,4 +134,7 @@
             <point key="canvasLocation" x="309" y="317"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="font" width="32" height="32"/>
+    </resources>
 </document>

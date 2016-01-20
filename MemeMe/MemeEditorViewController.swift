@@ -10,7 +10,7 @@ import UIKit
 
 class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
-    
+//MARK: UI outlets
     @IBOutlet weak var actionButton: UIBarButtonItem!
     @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var topTextField: UITextField!
@@ -19,24 +19,18 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     @IBOutlet weak var libraryButton: UIBarButtonItem!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
     @IBOutlet weak var memeView: UIView!
-
-    // "Impact" font, all caps, white with a black outline
-    let memeTextAttributes = [
-        NSStrokeColorAttributeName : UIColor.blackColor(),
-        NSForegroundColorAttributeName : UIColor.whiteColor(),
-        NSFontAttributeName : UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-        NSStrokeWidthAttributeName : Float(-3.0)
-    ]
-
-    let themeColor = UIColor.lightGrayColor()
+//MARK: --
+    
     let topText = "TOP"
     let bottomText = "BOTTOM"
+    let defaultFont = "HelveticaNeue-CondensedBlack"
+    var currentFont:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        customizeTextField(topTextField, text: topText)
-        customizeTextField(bottomTextField, text: bottomText)
+        setupTextField(topTextField, text: topText)
+        setupTextField(bottomTextField, text: bottomText)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -51,18 +45,37 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         unsubscribeFromKeyboardNotifications()
     }
 
-    func customizeTextField(textField: UITextField, text: String) {
-        textField.defaultTextAttributes = memeTextAttributes
+    func setupTextField(textField: UITextField, text: String) {
+        customizeTextField(textField, withFont: defaultFont)
         textField.delegate = self
         textField.text = text
-        textField.textAlignment = .Center
+//        textField.textAlignment = .Center
         textField.borderStyle = .None
+    }
+    
+    func customizeTextField(textField: UITextField, withFont font: String) {
+        currentFont = font
+        
+        let textAttributes = [
+            NSStrokeColorAttributeName : UIColor.blackColor(),
+            NSForegroundColorAttributeName : UIColor.whiteColor(),
+            NSFontAttributeName : UIFont(name: font, size: 40)!,
+            NSStrokeWidthAttributeName : Float(-3.0)
+        ]
+        textField.defaultTextAttributes = textAttributes
+        textField.textAlignment = .Center
     }
     
     func pickAnImage(sourceType: UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = sourceType
+
+//        let imagePicker = WDImagePicker()
+//        imagePicker.resizeableCropArea = true
+//        imagePicker.sourceType = sourceType
+//        imagePicker.delegate = self
+        
         self.presentViewController(imagePicker, animated: true, completion: nil)
     }
     
@@ -90,7 +103,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         pickAnImage(.Camera)
     }
     
-    
     @IBAction func doAction(sender: UIBarButtonItem) {
         let memedImage = generateMemedImage()
         
@@ -113,20 +125,43 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         bottomTextField.text = bottomText
     }
 
-//MARK: When the keyboardWillShow notification is received, shift the view's frame up
+    
+    @IBAction func changeFont(sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Change Font", message: nil, preferredStyle: .ActionSheet)
+        var fonts = UIFont.familyNames().sort()
+        fonts.insert(defaultFont, atIndex: 0)
+        
+        for font in fonts {
+            // add a checkmark for the current font using Unicode
+            let title = font == currentFont ? "\u{2713} \(currentFont!)" : font
+            
+            alert.addAction(UIAlertAction(title: title,
+                                      style: UIAlertActionStyle.Default,
+                                    handler: {(alert: UIAlertAction!) in
+                self.customizeTextField(self.topTextField, withFont: font)
+                self.customizeTextField(self.bottomTextField, withFont: font)
+            }))
+        }
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+//MARK: Keyboard
     func keyboardWillShow(notification: NSNotification) {
-        view.frame.origin.y = -getKeyboardHeight(notification)
+        if bottomTextField.isFirstResponder() {
+            view.frame.origin.y = -getKeyboardHeight(notification)
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        if bottomTextField.isFirstResponder() {
+            view.frame.origin.y = 0.0
+        }
     }
     
     func getKeyboardHeight(notification: NSNotification) -> CGFloat {
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
         return keyboardSize.CGRectValue().height
-    }
-
-//MARK: When the keyboardWillHide notification is received, shift the view's frame down
-    func keyboardWillHide(notification: NSNotification) {
-        view.frame.origin.y = 0.0
     }
     
 //MARK: un/subscription to notifications
