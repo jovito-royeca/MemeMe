@@ -8,15 +8,18 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
 
     
+    @IBOutlet weak var actionButton: UIBarButtonItem!
+    @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var imagePickerView: UIImageView!
     @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var libraryButton: UIBarButtonItem!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
-    
+    @IBOutlet weak var memeView: UIView!
+
     // "Impact" font, all caps, white with a black outline
     let memeTextAttributes = [
         NSStrokeColorAttributeName : UIColor.blackColor(),
@@ -25,27 +28,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         NSStrokeWidthAttributeName : Float(-3.0)
     ]
 
-    let themeColor = UIColor.grayColor()
+    let themeColor = UIColor.lightGrayColor()
     let topText = "TOP"
     let bottomText = "BOTTOM"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        topTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.delegate = self
-        topTextField.text = topText
-        topTextField.textAlignment = .Center
-        topTextField.borderStyle = .None
-//        topTextField.adjustsFontSizeToFitWidth = true
-        
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.delegate = self
-        bottomTextField.text = bottomText
-        bottomTextField.textAlignment = .Center
-        bottomTextField.borderStyle = .None
-        
-        view.backgroundColor = themeColor
+        customizeTextField(topTextField, text: topText)
+        customizeTextField(bottomTextField, text: bottomText)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -59,14 +50,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewWillDisappear(animated)
         unsubscribeFromKeyboardNotifications()
     }
-    
-    @IBAction func pickAnImageFromGallery(sender: UIBarButtonItem) {
-        pickAnImage(.PhotoLibrary)
-    }
-    
-    
-    @IBAction func pickAnImageFromCamera(sender: UIBarButtonItem) {
-        pickAnImage(.Camera)
+
+    func customizeTextField(textField: UITextField, text: String) {
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.delegate = self
+        textField.text = text
+        textField.textAlignment = .Center
+        textField.borderStyle = .None
     }
     
     func pickAnImage(sourceType: UIImagePickerControllerSourceType) {
@@ -76,6 +66,53 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         self.presentViewController(imagePicker, animated: true, completion: nil)
     }
     
+    func save(memedImage: UIImage) {
+        let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, image: imagePickerView.image!, memedImage: memedImage)
+        print("meme=\(meme)")
+    }
+    
+    func generateMemedImage() -> UIImage {
+        // Render memeView to an image
+        UIGraphicsBeginImageContext(memeView.frame.size)
+        memeView.drawViewHierarchyInRect(memeView.bounds, afterScreenUpdates: true)
+        let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return memedImage
+    }
+    
+//MARK: Button actions
+    @IBAction func pickAnImageFromGallery(sender: UIBarButtonItem) {
+        pickAnImage(.PhotoLibrary)
+    }
+    
+    @IBAction func pickAnImageFromCamera(sender: UIBarButtonItem) {
+        pickAnImage(.Camera)
+    }
+    
+    
+    @IBAction func doAction(sender: UIBarButtonItem) {
+        let memedImage = generateMemedImage()
+        
+        let objectsToShare = [memedImage]
+        let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+        activityVC.completionWithItemsHandler = { activity, success, items, error in
+            if error != nil {
+                self.save(memedImage)
+            }
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }
+        self.presentViewController(activityVC, animated: true, completion: nil)
+    }
+    
+    @IBAction func cancelMeme(sender: UIBarButtonItem) {
+        actionButton.enabled = false
+        cancelButton.enabled = false
+        imagePickerView.image = nil
+        topTextField.text = topText
+        bottomTextField.text = bottomText
+    }
+
 //MARK: When the keyboardWillShow notification is received, shift the view's frame up
     func keyboardWillShow(notification: NSNotification) {
         view.frame.origin.y = -getKeyboardHeight(notification)
@@ -107,6 +144,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             self.imagePickerView.image = image
+            actionButton.enabled = true
+            cancelButton.enabled = true
         }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
