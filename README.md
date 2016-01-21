@@ -1,6 +1,6 @@
 # MemeMe 
 
-Udacity project
+Udacity project: creates picture memes from Photo Library or Camera.
 
 ## Screenshots
 <img src="screenshots/IMG_01.png" width="30%" height="auto"/>
