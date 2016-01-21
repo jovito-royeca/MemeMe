@@ -153,7 +153,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 //MARK: Keyboard
     func keyboardWillShow(notification: NSNotification) {
         if bottomTextField.isFirstResponder() {
-            view.frame.origin.y -= getKeyboardHeight(notification)
+            view.frame.origin.y = -getKeyboardHeight(notification)
         }
     }
     
@@ -212,6 +212,10 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
                 } else if textField == bottomTextField {
                     textField.text = bottomText
                 }
+            
+            } else {
+                // always capitalize the text
+                textField.text = text.uppercaseString
             }
         }
     }
