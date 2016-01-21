@@ -45,7 +45,7 @@
                                         </variation>
                                     </imageView>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="HW0-xA-Qj7">
-                                        <rect key="frame" x="20" y="452" width="560" height="30"/>
+                                        <rect key="frame" x="20" y="462" width="560" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                                     </textField>
@@ -59,7 +59,7 @@
                                 <constraints>
                                     <constraint firstItem="F8r-iq-1eY" firstAttribute="leading" secondItem="JIV-ii-1eu" secondAttribute="leading" constant="20" id="62f-Gh-EeE"/>
                                     <constraint firstItem="HW0-xA-Qj7" firstAttribute="leading" secondItem="JIV-ii-1eu" secondAttribute="leading" constant="20" id="85V-s6-z5c"/>
-                                    <constraint firstAttribute="bottom" secondItem="HW0-xA-Qj7" secondAttribute="bottom" constant="10" id="JkE-a7-DH5"/>
+                                    <constraint firstAttribute="bottom" secondItem="HW0-xA-Qj7" secondAttribute="bottom" id="JkE-a7-DH5"/>
                                     <constraint firstAttribute="trailing" secondItem="x0T-dd-8rf" secondAttribute="trailing" id="NAz-SV-ib6"/>
                                     <constraint firstAttribute="bottom" secondItem="x0T-dd-8rf" secondAttribute="bottom" id="NMf-YQ-9jb"/>
                                     <constraint firstAttribute="trailing" secondItem="F8r-iq-1eY" secondAttribute="trailing" constant="20" id="e7W-5Q-5JK"/>
