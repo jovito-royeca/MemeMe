@@ -23,14 +23,23 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     
     let topText = "TOP"
     let bottomText = "BOTTOM"
+    let memeFontKey = "memeFont"
     let defaultFont = "HelveticaNeue-CondensedBlack"
     var currentFont:String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        setupTextField(topTextField, text: topText)
-        setupTextField(bottomTextField, text: bottomText)
+        
+        // load previously save font, else use the default font
+        if let memeFont = NSUserDefaults.standardUserDefaults().valueForKey(memeFontKey) {
+            currentFont = memeFont as? String
+        } else {
+            currentFont = defaultFont
+        }
+        
+        setupTextField(topTextField, text: topText, font: currentFont!)
+        setupTextField(bottomTextField, text: bottomText, font: currentFont!)
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -45,17 +54,14 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         unsubscribeFromKeyboardNotifications()
     }
 
-    func setupTextField(textField: UITextField, text: String) {
-        customizeTextField(textField, withFont: defaultFont)
+    func setupTextField(textField: UITextField, text: String, font: String) {
+        customizeTextField(textField, withFont: font)
         textField.delegate = self
         textField.text = text
-//        textField.textAlignment = .Center
         textField.borderStyle = .None
     }
     
     func customizeTextField(textField: UITextField, withFont font: String) {
-        currentFont = font
-        
         let textAttributes = [
             NSStrokeColorAttributeName : UIColor.blackColor(),
             NSForegroundColorAttributeName : UIColor.whiteColor(),
@@ -64,18 +70,14 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         ]
         textField.defaultTextAttributes = textAttributes
         textField.textAlignment = .Center
+        
+        currentFont = font
     }
     
     func pickAnImage(sourceType: UIImagePickerControllerSourceType) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = sourceType
-
-//        let imagePicker = WDImagePicker()
-//        imagePicker.resizeableCropArea = true
-//        imagePicker.sourceType = sourceType
-//        imagePicker.delegate = self
-        
         self.presentViewController(imagePicker, animated: true, completion: nil)
     }
     
@@ -135,12 +137,15 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             // add a checkmark for the current font using Unicode
             let title = font == currentFont ? "\u{2713} \(currentFont!)" : font
             
-            alert.addAction(UIAlertAction(title: title,
-                                      style: UIAlertActionStyle.Default,
-                                    handler: {(alert: UIAlertAction!) in
+            // when the user selects a font, change the font in the text fields and save the font selected
+            let handler = {(alert: UIAlertAction!) in
+                self.currentFont = font
                 self.customizeTextField(self.topTextField, withFont: font)
                 self.customizeTextField(self.bottomTextField, withFont: font)
-            }))
+                NSUserDefaults.standardUserDefaults().setValue(self.currentFont, forKey: self.memeFontKey)
+                NSUserDefaults.standardUserDefaults().synchronize()
+            }
+            alert.addAction(UIAlertAction(title: title, style: UIAlertActionStyle.Default, handler: handler))
         }
         self.presentViewController(alert, animated: true, completion: nil)
     }

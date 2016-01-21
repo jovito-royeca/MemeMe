@@ -55,7 +55,7 @@
                                         <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters"/>
                                     </textField>
                                 </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="F8r-iq-1eY" firstAttribute="leading" secondItem="JIV-ii-1eu" secondAttribute="leading" constant="20" id="62f-Gh-EeE"/>
                                     <constraint firstItem="HW0-xA-Qj7" firstAttribute="leading" secondItem="JIV-ii-1eu" secondAttribute="leading" constant="20" id="85V-s6-z5c"/>
