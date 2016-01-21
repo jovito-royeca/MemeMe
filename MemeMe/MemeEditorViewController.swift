@@ -78,7 +78,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = sourceType
-        self.presentViewController(imagePicker, animated: true, completion: nil)
+        presentViewController(imagePicker, animated: true, completion: nil)
     }
     
     func save(memedImage: UIImage) {
@@ -116,7 +116,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             }
             self.dismissViewControllerAnimated(true, completion: nil)
         }
-        self.presentViewController(activityVC, animated: true, completion: nil)
+        presentViewController(activityVC, animated: true, completion: nil)
     }
     
     @IBAction func cancelMeme(sender: UIBarButtonItem) {
@@ -147,7 +147,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             }
             alert.addAction(UIAlertAction(title: title, style: UIAlertActionStyle.Default, handler: handler))
         }
-        self.presentViewController(alert, animated: true, completion: nil)
+        presentViewController(alert, animated: true, completion: nil)
     }
     
 //MARK: Keyboard
@@ -183,15 +183,15 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 //Mark: UIImagePickerControllerDelegate
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            self.imagePickerView.image = image
+            imagePickerView.image = image
             actionButton.enabled = true
             cancelButton.enabled = true
         }
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
 //MARK: UITextFieldDelegate
