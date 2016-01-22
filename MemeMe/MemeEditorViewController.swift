@@ -31,7 +31,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        // load previously save font, else use the default font
+        // load previously saved font, else use the default font
         if let memeFont = NSUserDefaults.standardUserDefaults().valueForKey(memeFontKey) {
             currentFont = memeFont as? String
         } else {
@@ -184,6 +184,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             imagePickerView.image = image
+            imagePickerView.contentMode = .ScaleAspectFit
             actionButton.enabled = true
             cancelButton.enabled = true
         }
