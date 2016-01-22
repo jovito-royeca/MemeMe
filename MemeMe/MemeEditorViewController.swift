@@ -26,6 +26,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     let memeFontKey = "memeFont"
     let defaultFont = "HelveticaNeue-CondensedBlack"
     var currentFont:String?
+    var meme:Meme?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +41,12 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         
         setupTextField(topTextField, text: topText, font: currentFont!)
         setupTextField(bottomTextField, text: bottomText, font: currentFont!)
+
+        if let m = meme {
+            topTextField.text = m.topText
+            imagePickerView.image = m.image
+            bottomTextField.text = m.bottomText
+        }
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -82,12 +89,12 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func save(memedImage: UIImage) {
-        let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, image: imagePickerView.image!, memedImage: memedImage)
+        meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, image: imagePickerView.image!, memedImage: memedImage)
         
         // Add it to the memes array in the Application Delegate
         let object = UIApplication.sharedApplication().delegate
         let appDelegate = object as! AppDelegate
-        appDelegate.memes.append(meme)
+        appDelegate.memes.append(meme!)
     }
     
     func generateMemedImage() -> UIImage {
@@ -115,20 +122,25 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         let objectsToShare = [memedImage]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
         activityVC.completionWithItemsHandler = { activity, success, items, error in
-            if error != nil {
-                self.save(memedImage)
+            // user did not cancel
+            if success {
+                if let e = error {
+                    print("error saving meme: \(e.userInfo)")
+                } else {
+                    self.save(memedImage)
+                }
+                self.dismissViewControllerAnimated(true, completion: nil)
             }
-            self.dismissViewControllerAnimated(true, completion: nil)
         }
         presentViewController(activityVC, animated: true, completion: nil)
     }
     
     @IBAction func cancelMeme(sender: UIBarButtonItem) {
         actionButton.enabled = false
-        cancelButton.enabled = false
         imagePickerView.image = nil
         topTextField.text = topText
         bottomTextField.text = bottomText
+        dismissViewControllerAnimated(true, completion: nil)
     }
 
     
@@ -190,7 +202,6 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             imagePickerView.image = image
             imagePickerView.contentMode = .ScaleAspectFit
             actionButton.enabled = true
-            cancelButton.enabled = true
         }
         dismissViewControllerAnimated(true, completion: nil)
     }
