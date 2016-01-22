@@ -51,4 +51,28 @@ class SentMemesTableViewController: UITableViewController {
         detailController.meme = memes[indexPath.row]
         navigationController!.pushViewController(detailController, animated: true)
     }
+    
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == .Delete {
+            let alert = UIAlertController(title: "Delete", message: "Are you sure you want to delete this meme?", preferredStyle: .Alert)
+            
+            alert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+                // Remove the meme from memes array in the Application Delegate
+                let object = UIApplication.sharedApplication().delegate
+                let appDelegate = object as! AppDelegate
+                appDelegate.memes.removeAtIndex(indexPath.row)
+                self.tableView!.reloadData()
+            }))
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: { (action: UIAlertAction!) in
+                self.tableView!.reloadData()
+            }))
+            
+            presentViewController(alert, animated: true, completion: nil)
+        }
+    }
 }
