@@ -12,13 +12,13 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 
 //MARK: UI outlets
     @IBOutlet weak var actionButton: UIBarButtonItem!
-    @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var topTextField: UITextField!
     @IBOutlet weak var imagePickerView: UIImageView!
     @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var libraryButton: UIBarButtonItem!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
-    @IBOutlet weak var memeView: UIView!
+    @IBOutlet weak var topToolbar: UIToolbar!
+    @IBOutlet weak var bottomToolbar: UIToolbar!
 //MARK: --
     
     let topText = "TOP"
@@ -27,6 +27,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     let defaultFont = "HelveticaNeue-CondensedBlack"
     var currentFont:String?
     var meme:Meme?
+    var memeIndex:Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,6 +55,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
         
         cameraButton.enabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         subscribeToKeyboardNotifications()
+        actionButton.enabled = imagePickerView.image != nil
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -89,20 +91,37 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     func save(memedImage: UIImage) {
-        meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, image: imagePickerView.image!, memedImage: memedImage)
-        
-        // Add it to the memes array in the Application Delegate
+        // Update the memes array in the Application Delegate
         let object = UIApplication.sharedApplication().delegate
         let appDelegate = object as! AppDelegate
-        appDelegate.memes.append(meme!)
+        
+        if let _ = meme {
+            meme!.topText = topTextField.text!
+            meme!.bottomText = bottomTextField.text!
+            meme!.image = imagePickerView.image!
+            meme!.memedImage = memedImage
+            appDelegate.updateMemeAtIndex(memeIndex!, meme: meme!)
+            
+        } else {
+            meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, image: imagePickerView.image!, memedImage: memedImage)
+            appDelegate.addMeme(meme!)
+        }
     }
     
     func generateMemedImage() -> UIImage {
-        // Render memeView to an image
-        UIGraphicsBeginImageContext(memeView.frame.size)
-        memeView.drawViewHierarchyInRect(memeView.bounds, afterScreenUpdates: true)
-        let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        // Hide toolbar and navbar
+        topToolbar.hidden = true
+        bottomToolbar.hidden = true
+        
+        // Render view to an image
+        UIGraphicsBeginImageContext(self.view.frame.size)
+        self.view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
+        let memedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
+        
+        // Show toolbar and navbar
+        topToolbar.hidden = false
+        bottomToolbar.hidden = false
         
         return memedImage
     }
@@ -129,6 +148,8 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
                 } else {
                     self.save(memedImage)
                 }
+                //TODO: update detailController to reflect the changes...
+                
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
         }
@@ -169,7 +190,7 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
 //MARK: Keyboard
     func keyboardWillShow(notification: NSNotification) {
         if bottomTextField.isFirstResponder() {
-            view.frame.origin.y = -getKeyboardHeight(notification)
+            view.frame.origin.y -= getKeyboardHeight(notification)
         }
     }
     

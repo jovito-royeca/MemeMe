@@ -13,6 +13,7 @@ class MemeDetailViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     
     var meme:Meme!
+    var memeIndex:Int!
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -27,8 +28,9 @@ class MemeDetailViewController: UIViewController {
     }
 
     @IBAction func editMeme(sender: UIBarButtonItem) {
-        let editorController = self.storyboard!.instantiateViewControllerWithIdentifier("MemeEditorViewController") as! MemeDetailViewController
+        let editorController = self.storyboard!.instantiateViewControllerWithIdentifier("MemeEditorViewController") as! MemeEditorViewController
         editorController.meme = meme
-        navigationController!.pushViewController(editorController, animated: true)
+        editorController.memeIndex = memeIndex
+        navigationController!.presentViewController(editorController, animated: true, completion: nil)
     }
 }
