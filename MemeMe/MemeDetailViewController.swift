@@ -29,13 +29,12 @@ class MemeDetailViewController: UIViewController {
         
         tabBarController?.tabBar.hidden = true
         imageView!.image = meme.memedImage
-        
+        imageView!.contentMode = .ScaleAspectFit
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         tabBarController?.tabBar.hidden = false
-        
     }
 
     @IBAction func editMeme(sender: UIBarButtonItem) {
@@ -58,7 +57,7 @@ class MemeDetailViewController: UIViewController {
             }
             if let memedImage = userInfo["memedImage"] {
                 meme.memedImage = memedImage as? UIImage
-                imageView!.image = meme.memedImage
+//                imageView!.image = meme.memedImage
             }
         }
     }
