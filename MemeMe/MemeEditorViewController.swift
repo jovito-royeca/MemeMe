@@ -106,6 +106,14 @@ class MemeEditorViewController: UIViewController, UIImagePickerControllerDelegat
             meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, image: imagePickerView.image!, memedImage: memedImage)
             appDelegate.addMeme(meme!)
         }
+        
+        let userInfo: [String: AnyObject] =
+            ["topText": meme!.topText!,
+             "bottomText": meme!.bottomText!,
+             "image": meme!.image!,
+             "memedImage": meme!.memedImage!]
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("memeWasUpdated", object: self, userInfo: userInfo)
     }
     
     func generateMemedImage() -> UIImage {

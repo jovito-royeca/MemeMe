@@ -15,24 +15,33 @@ class SentMemesTableViewController: UITableViewController {
         let appDelegate = object as! AppDelegate
         return appDelegate.memes
     }
+    var editorShowOnce = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-//        Edwin said:
-//        "The initial view should be the SentMemes. At the start the app will check for memes,
-//        if there are none, the MemeEditor will be presented. As the app doesn't store data
-//        in the device, every time you restart the app, there won't be any memes."
-//        https://discussions.udacity.com/t/please-clarify-contradictory-specs-meme-editor-or-sent-memes-first/17931/3?u=jovit.royeca
-        if memes.count == 0 {
-            showMemeEditor()
-        }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         tableView!.reloadData()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        Edwin said:
+//        "The initial view should be the SentMemes. At the start the app will check for memes,
+//        if there are none, the MemeEditor will be presented. As the app doesn't store data
+//        in the device, every time you restart the app, there won't be any memes."
+//        https://discussions.udacity.com/t/please-clarify-contradictory-specs-meme-editor-or-sent-memes-first/17931/3?u=jovit.royeca
+        
+        if !editorShowOnce {
+            if memes.count == 0 {
+                showMemeEditor()
+                editorShowOnce = true
+            }
+        }
     }
     
     func showMemeEditor() {
